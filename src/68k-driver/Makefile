@@ -1,5 +1,5 @@
-PROJ_NAME = 68kproj
-MAIN_SRC_FILE = main.asm
+PROJ_NAME = SS68KDRV
+MAIN_SRC_FILE = driver_main.asm
 
 VASM_PATH = ./build-tools/vasmm68k_mot
 
