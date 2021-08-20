@@ -1,0 +1,22 @@
+--- Saturn Sound System Startup Procedure (regardless of driver used) ---
+
+1. Halt the 68000 by executing the SOUND OFF command through the SMPC.
+   This will hold the (active-low) reset line HIGH.
+2. From the main system SH-2, initialize the SCSP registers for a 4Mbit sound
+   DRAM configuration, and a 16-bit DAC (by disabling the 18-bit DAC flag.)
+   Write $02 to the SH-2 address $25B00400 (which the SCU translates to the
+   sound system address of $100400, the first byte of the CSR of the SCSP.)
+3. Zero-clear the 68K program area in sound RAM ($00000 to $0B000).
+   This translates into $25A00000 to $25A0AFFF on the main system SH-2 side.
+4. Transfer the sound driver binary to sound RAM at $00000 ($25A00000).
+5. Transfer other needed sound data (driver-dependent) to sound RAM.
+6. Clear the 68000 RESET through the SMPC's SOUND ON command to start the CPU.
+7. From there, communicate with the driver via its established interface(s).
+
+--- Important processes to follow driver-side ---
+
+1. When changing sound data in sound RAM, ensure that you clear the DSP and
+   halt all currently-playing sounds, or the system could crash or behave
+   unpredictably. Whether this applies to custom drivers is yet to be confirmed.
+
+TODO :: Notes on DMA and bus access priority / 68k stall
