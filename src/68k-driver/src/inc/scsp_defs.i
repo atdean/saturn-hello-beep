@@ -8,9 +8,17 @@
 
 ; --- Sound DRAM ---
 base_SRAM_START         equ $000000
-size_SRAM_68K_VEC_TBL   equ $3FF         ; first 1KB is reserved for the 68K vector table
-;base_SRAM_68K_PROG      equ $010000      ; start of the 68k sound program
 size_SRAM_TOTAL         equ $080000      ; total sound DRAM is 4Mbit (512KB)
+
+size_SRAM_68K_VEC_TBL   equ $400         ; first 1KB is reserved for the 68K vector table
+base_SRAM_68K_PROG      equ $000400      ; start of the 68k sound program
+; Set the stack to be $400 (1KB) in size and start $400 (1KB) from the end of sound RAM.
+; The 68K stack grows "downward" in memory, so it will start at $07FC00 and
+; can "grow" (in reverse) up to $07F800.
+size_SRAM_68K_STACK     equ $400         ; Total size of the 68k stack area
+offset_SRAM_68K_STACK   equ $400         ; Offset in bytes from the end of sound RAM for bottom of stack
+base_SRAM_68K_STACK     equ size_SRAM_TOTAL-offset_SRAM_68K_STACK
+end_SRAM_68K_STACK      equ base_SRAM_68K_STACK-size_SRAM_68K_STACK
 
 ; --- SCSP Register Map ---
 size_SCSP_SLOT_UNIT     equ $20         ; Size of a single slot ISR (including unused bits)

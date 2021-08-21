@@ -1,6 +1,6 @@
 ; This should start at $000000 and occupy the first 1024 bytes (1KB) in RAM
 interrupt_vector_table:
-    dc.l    $0007FFFF           ; Reset vector initial stack pointer address
+    dc.l    base_SRAM_68K_STACK ; Reset vector initial stack pointer address
     dc.l    entry_point         ; Reset vector initial PC address
     dc.l    ignore_handler      ; Bus error
     dc.l    ignore_handler      ; Address error
