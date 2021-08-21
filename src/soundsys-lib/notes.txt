@@ -8,6 +8,7 @@
    sound system address of $100400, the first byte of the CSR of the SCSP.)
 3. Zero-clear the 68K program area in sound RAM ($00000 to $0B000).
    This translates into $25A00000 to $25A0AFFF on the main system SH-2 side.
+     - Clearing all 4Mbit of sound RAM should take 100ms or less.
 4. Transfer the sound driver binary to sound RAM at $00000 ($25A00000).
 5. Transfer other needed sound data (driver-dependent) to sound RAM.
 6. Clear the 68000 RESET through the SMPC's SOUND ON command to start the CPU.
@@ -18,5 +19,34 @@
 1. When changing sound data in sound RAM, ensure that you clear the DSP and
    halt all currently-playing sounds, or the system could crash or behave
    unpredictably. Whether this applies to custom drivers is yet to be confirmed.
+2. Do not use the RESET or TAS instructions on the 68000. Always perform resets
+   of the 68k/SCSP through the SH2->SMPC only (SNDON and SNDOFF commands.)
+3. Do not stop the 68k for longer than absolutely necessary and only do so when
+   loading the driver into sound RAM, or the system may crash.
+     - Always start the 68k immediately (within 0.5s) after loading the driver.
+     - Do not stop the 68k even if it has nothing to process; instead run an
+       idle loop or something similar.
+4. The main system SH-2 gets priority over the 68k in accessing sound RAM via SCU.
+   TODO :: Notes on DMA and bus access priority / 68k stall
 
-TODO :: Notes on DMA and bus access priority / 68k stall
+--- SH-2 to SCSP interface ---
+
+1.  To start the main CPU interface on the SCSP, the SH-2 (through SCU) sends a 1
+    to the SCSP MCCSN (select signal) register. When this goes HIGH, the interface
+    starts. Setting MCCSN to 0 (LOW) ends the connection.
+      - The main SH-2 CPU can't write in bytes, so send 16 bit units.
+2.  When the SCSP gets a read/write request from the SH-2, the SCSP sets the
+    MCRDYN (ready signal) register to 1 while it fetches the data to be output
+    on MCD[7:0]. The SH-2 waits until MCRDYN is set to 0, confirming the operation
+    has completed.
+      - Due to this stall, avoid constant R/W from the main CPU (except when the
+        system is powering up and initializing the program, for example.)
+      - This wait also will/should cause a stall on the 68k program.
+      - During this wait/fetch period, the existing data presented on the MCD
+        register does not change.
+
+--- Things to be mindful of when changing sound RAM data ---
+
+1. If rewriting the DSP program, DSP operation becomes unstable and
+   sound will not be output properly from “EFREG”. Set “EFSDL” to “0H”
+   to prevent sound from being output during the rewrite transfer.
