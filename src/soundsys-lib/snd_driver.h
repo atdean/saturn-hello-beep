@@ -11,6 +11,8 @@
 
 #define SNDRAM_START_ADDR   0x25A00000
 
-void snddrv_init();
+void snddrv_init(void);
+void snddrv_play_test(void);
+void snddrv_stop_test(void);
 
 #endif //SATURN_HELLO_BEEP_SND_DRIVER_H

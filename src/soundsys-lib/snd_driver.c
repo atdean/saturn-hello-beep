@@ -2,11 +2,12 @@
 // Created by adean on 8/23/21.
 //
 
-#include "snd-driver.h"
+#include "snd_driver.h"
 
-void snddrv_init()
+// TODO :: The init function should probably return an int for relaying back error codes
+void snddrv_init(void)
 {
-    // TODO :: Load driver binary from a filesystem or header include
+    // TODO :: Load 68k driver binary from a filesystem or header include
 
     // Write 0x01 to the SMPC status flag register to signify that we're executing a command
     SMPC_REG_SF = 0x1;
@@ -23,5 +24,17 @@ void snddrv_init()
     // TODO :: Transfer wave/sequence/patch banks and DSP program to sound RAM
 
     // TODO :: Command SMPC to start the sound system with the SNDON command
+    SMPC_REG_SF = 0x1;
+    SMPC_REG_COMREG = SMPC_CMD_SNDON;
+    while (SMPC_REG_SF & 0x1) {}
+
     // TODO :: Check to ensure sound driver is runnning and not reporting errors
+}
+
+void snddrv_play_test(void) {
+
+}
+
+void snddrv_stop_test(void) {
+
 }
