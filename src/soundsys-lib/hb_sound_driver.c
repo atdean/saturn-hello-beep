@@ -46,7 +46,7 @@ void hb_soundsys_clear_ram(void)
     // TODO :: Need to test this on a Saturn FW instead of SlDMACopy, etc. to ensure it works
     for (int cur_word = 0; cur_word < 0x80000; cur_word += 2) {
         // SH2->SCU->sound system direct transfers should be 16-bit values
-        *hb_SNDRAM_PTR[i * 2] = 0x0000;
+        *hb_SNDRAM_PTR[cur_word * 2] = 0x0000;
     }
 #endif
 }
