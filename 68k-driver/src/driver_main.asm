@@ -17,7 +17,7 @@ init_scsp:
     move.b #$0F,(a0)
 
 driver_main_loop:
-    jmp    run_idle_loop ; for now, just idle until I start implementing functionality
+    bra.s  run_idle_loop ; for now, just idle until I start implementing functionality
 
 ; immediately return from the exception/interrupt
 ignore_handler:
@@ -26,7 +26,7 @@ ignore_handler:
 ; this is just an infinite "no-op" loop. Temp utility function for testing.
 run_idle_loop:
     nop
-    jmp    run_idle_loop
+    bra.s  run_idle_loop
 
 __end:
 
