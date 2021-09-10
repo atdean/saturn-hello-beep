@@ -25,7 +25,6 @@ ignore_handler:
 
 ; this is just an infinite "no-op" loop. Temp utility function for testing.
 run_idle_loop:
-    nop
     bra.s  run_idle_loop
 
 __end:
