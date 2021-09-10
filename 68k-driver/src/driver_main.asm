@@ -3,7 +3,7 @@
     ORG $000400 ; is this needed? the vector table will occupy exactly the first $400 bytes
 
 entry_point:
-    bra.s  init_scsp
+    bra.w  init_scsp
 
 init_scsp:
     ; TODO :: 68K must wait approx 30µs after SMPC reset for SCSP to init registers
